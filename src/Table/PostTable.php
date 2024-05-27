@@ -20,12 +20,27 @@ final class PostTable extends Table
         ]);
         if ($ok === false) 
         {
-            throw new \Exception("Impossible de supprimer l'enregistrement $id et dans la table {$this->table}");   
+            throw new \Exception("Impossible de modifier l'enregistrement $id et dans la table {$this->table}");   
         }
+    }
+    public function create (Post $post): void 
+    {
+        $query =  $this->pdo->prepare("INSERT INTO {$this->table} SET name = :name, slug = :slug, created_at = :created, content = :content");
+        $ok = $query->execute([
+            'name' => $post->getName(),
+            'slug' => $post->getSlug(),
+            'content' => $post->getContent(),
+            'created' => $post->getCreatedAt()->format('Y-m-d H:i:s')
+        ]);
+        if ($ok === false) 
+        {
+            throw new \Exception("Impossible de créer l'enregistrement  dans la table {$this->table}");   
+        }
+        $post->setID($this->pdo->lastInsertId());
     }
     public function delete (int $id): void 
     {
-        $query =  $this->pdo->prepare("DELETE FROM { $this->table} WHERE id = ?");
+        $query =  $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
         $ok = $query->execute([$id]);
         if ($ok === false) 
         {
