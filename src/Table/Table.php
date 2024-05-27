@@ -28,5 +28,24 @@ abstract class Table
             throw new NotFoundException($this->table, $id);
         }
         return $result;
+    }    
+    /**
+     * Vérifie si une valeur existe dans la table
+     *
+     * @param  string $field champ à rechercher
+     * @param  mixed $value Valeur associée au champs
+     * @return bool
+     */
+    public function exists (string $field, $value, ?int $except = null): bool 
+    {
+        $sql = "SELECT COUNT(id) FROM {$this->table} WHERE $field = ?";
+        $params = [$value];
+        if ($except !== null) {
+            $sql .= " AND id != ?";
+            $params[] = $except;
+        }
+        $query = $this->pdo->prepare($sql);
+        $query->execute($params);
+        return (int)$query->fetch(PDO::FETCH_NUM)[0] > 0;
     }
 }
