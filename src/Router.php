@@ -44,7 +44,7 @@ class Router
         $params = $match['params'];
         $router = $this;
         $isAdmin = strpos($view, 'admin/') !== false;
-        $layout = $isAdmin ? 'admin/layouts/default' : 'layouts/deafult';
+        $layout = $isAdmin ? 'admin/layouts/default' : 'layouts/default';
         ob_start();
         require $this->viewPath . DIRECTORY_SEPARATOR . $view . '.php';
         $content = ob_get_clean();

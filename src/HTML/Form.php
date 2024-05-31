@@ -32,7 +32,24 @@ HTML;
             </div>
 HTML;
     }
-    private function getValue (string $key): ?string 
+    public function select (string $key, string $label, array $options = []): string
+    {
+        $optionsHTML = [];
+        $value = $this->getValue($key);
+        foreach ($options as $k => $v) {
+            $selected = in_array($k, $value) ? " selected" : "";
+            $optionsHTML[] = "<option value=\"$k\"$selected>$v</option>";  
+        }
+        $optionsHTML = implode('', $optionsHTML);
+        return <<<HTML
+            <div class="form-group">
+                <label for="field{$key}">{$label}</label>
+                <select type="text" id="field{$key}" class="form-control {$this->getInputClass($key)}" name="{$key}[]" required multiple>{$optionsHTML}</select>
+                {$this->getErrorFeedback($key)}
+            </div>
+HTML;
+    }
+    private function getValue (string $key)
     {
         if (is_array($this->data)) {
             return $this->data[$key] ?? null;
